@@ -43,7 +43,7 @@ def main(_): ##主函数
   run_config.gpu_options.allow_growth=True
 
   with tf.Session(config=run_config) as sess: ##会话开始
-    vaegan = VAEGAN( ##模型 的创建 图是在这里建立的起来的嘛
+    vaegan = VAEGAN( ##模型 的创建 图是在这里建立的起来的嘛 ，但是对于会话的具体操作代码 也是在VAEGAN这个里面 
         sess, ##会话
         input_width=FLAGS.input_width, ##
         input_height=FLAGS.input_height, ##
