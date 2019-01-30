@@ -7,8 +7,9 @@ from utils import pp, to_json, show_all_variables
 
 import tensorflow as tf
 
+## 这是一些超参数的设置
 flags = tf.app.flags
-flags.DEFINE_integer("epoch", 500, "Epoch to train [25]")
+flags.DEFINE_integer("epoch", 500, "Epoch to train [25]") ##周期
 flags.DEFINE_float("learning_rate", 0.0001, "default learning rate of for adam [0.0001]")
 flags.DEFINE_float("beta1", 0.5, "Momentum term of adam [0.5]")
 flags.DEFINE_integer("train_size", np.inf, "The size of train samples [np.inf]")
@@ -21,18 +22,18 @@ flags.DEFINE_string("dataset", "Nottingham", "The name of dataset.")
 flags.DEFINE_string("input_fname_pattern", "*.mid", "Glob pattern of filename of inputs [*]")
 flags.DEFINE_string("checkpoint_dir", "checkpoint", "Directory name to save the checkpoints [checkpoint]")
 flags.DEFINE_string("sample_dir", "samples", "Directory name to save the sample samples [samples]")
-flags.DEFINE_boolean("train", False, "True for training, False for testing [False]")
+flags.DEFINE_boolean("train", False, "True for training, False for testing [False]") ##是训练还是test
 FLAGS = flags.FLAGS
 
-def main(_):
+def main(_): ##主函数
   pp.pprint(flags.FLAGS.__flags)
 
-  if FLAGS.input_width is None:
+  if FLAGS.input_width is None: ##
     FLAGS.input_width = FLAGS.input_height
-  if FLAGS.output_width is None:
+  if FLAGS.output_width is None: ##
     FLAGS.output_width = FLAGS.output_height
 
-  if not os.path.exists(FLAGS.checkpoint_dir):
+  if not os.path.exists(FLAGS.checkpoint_dir): ##
     os.makedirs(FLAGS.checkpoint_dir)
   if not os.path.exists(FLAGS.sample_dir):
     os.makedirs(FLAGS.sample_dir)
@@ -41,22 +42,23 @@ def main(_):
   run_config = tf.ConfigProto()
   run_config.gpu_options.allow_growth=True
 
-  with tf.Session(config=run_config) as sess:
-    vaegan = VAEGAN(
-        sess,
-        input_width=FLAGS.input_width,
-        input_height=FLAGS.input_height,
-        output_width=FLAGS.output_width,
-        output_height=FLAGS.output_height,
-        batch_size=FLAGS.batch_size,
-        sample_num=FLAGS.batch_size,
-        dataset_name=FLAGS.dataset,
-        input_fname_pattern=FLAGS.input_fname_pattern,        
-        checkpoint_dir=FLAGS.checkpoint_dir,
-        sample_dir=FLAGS.sample_dir)
+  with tf.Session(config=run_config) as sess: ##会话开始
+    vaegan = VAEGAN( ##模型 的创建 图是在这里建立的起来的嘛
+        sess, ##会话
+        input_width=FLAGS.input_width, ##
+        input_height=FLAGS.input_height, ##
+        output_width=FLAGS.output_width, ##
+        output_height=FLAGS.output_height, ##
+        batch_size=FLAGS.batch_size, ##
+        sample_num=FLAGS.batch_size, ##样本数目
+        dataset_name=FLAGS.dataset, ##数据集的名字
+        input_fname_pattern=FLAGS.input_fname_pattern, ##        
+        checkpoint_dir=FLAGS.checkpoint_dir, ##
+        sample_dir=FLAGS.sample_dir) ##
 
-    show_all_variables()
+    show_all_variables() ##show所有的变量
 
+    ##先train， 然后test
     if FLAGS.train:
       vaegan.train(FLAGS)
     else:
